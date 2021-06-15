@@ -45,7 +45,7 @@ def write_csv(record):
 
 def get_info():
     r = Record(datetime.now())
-    print('Fetching info at', r.datetime, 'for @' + r.username)
+    print('Fetching info', 'for @' + r.username, 'at',r.datetime)
     print('Getting followers...')
     for follower in profile.get_followers():
         r.followers.add(follower.username)
@@ -86,14 +86,14 @@ def compare_csv(old, new):
         print('Can\'t compare across accounts!')
         return
 
-    print(new.datetime - old.datetime, 'between records')
+    print('Time elapsed between records', new.datetime - old.datetime)
 
     # compare following lists between two records
     if old.following == new.following:
         print('No changes in following count\t[{}]'.format(len(new.following)))
     else:
         intersect = old.following.intersection(new.following)
-        diff_old = intersect.difference(old.following)
+        diff_old = old.following.difference(intersect)
         diff_new = new.following.difference(intersect)
         print('Following count changes: ({}) +{} -{}'.format(len(new.following), len(diff_new), len(diff_old)))
         for username in diff_new:
@@ -115,10 +115,15 @@ def compare_csv(old, new):
             print('[-]', username)
         print()
 
+    no_followback = new.following.difference(new.followers)
+    print('Accounts you follow that don\'t follow you back: [{}]'.format(len(no_followback)))
+    for user in no_followback:
+        print(user)
+
 
 # for testing
 r1 = parse_csv('2021-06-14_145731.csv')
-r2 = parse_csv('2021-06-14_163413.csv')
+r2 = parse_csv('2021-06-14_202532.csv')
 compare_csv(r1, r2)
 
 
