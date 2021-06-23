@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import csv
 import instaloader
 
-
 L = instaloader.Instaloader()
 load_dotenv()
 # Login or load session
@@ -45,7 +44,7 @@ def write_csv(record):
 
 def get_info():
     r = Record(datetime.now())
-    print('Fetching info', 'for @' + r.username, 'at',r.datetime)
+    print('Fetching info', 'for @' + r.username, 'at', r.datetime)
     print('Getting followers...')
     for follower in profile.get_followers():
         r.followers.add(follower.username)
@@ -121,10 +120,14 @@ def compare_csv(old, new):
         print(user)
 
 
-# for testing
-r1 = parse_csv('2021-06-14_145731.csv')
-r2 = parse_csv('2021-06-14_202532.csv')
+def get_latest_filename():
+    def filtercsv(filename):
+        return '.csv' in filename
+
+    lst = list(filter(filtercsv, os.listdir()))
+    return lst.pop()
+
+
+r1 = parse_csv(get_latest_filename())
+r2 = get_info()
 compare_csv(r1, r2)
-
-
-
